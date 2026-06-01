@@ -206,7 +206,7 @@
       <div class="loggedin-name" id="user-name">—</div>
       <div class="loggedin-email" id="user-email">—</div>
       <div class="loggedin-points">🎁 <span id="user-points">25</span> pt 保有中</div>
-      <a class="goto-app" href="arigato-kuji-v2.html">アプリを開く →</a>
+      <a class="goto-app" href="/arigato-kuji-v2.html">アプリを開く →</a>
       <button class="btn-outline" id="logout-btn">ログアウト</button>
     </div>
   </div>
@@ -356,6 +356,11 @@
   // Listen to auth changes
   sb.auth.onAuthStateChange((event, session) => {
     if (session?.user) {
+      // Check if we came from OAuth redirect
+      if (event === 'SIGNED_IN' && document.referrer === '') {
+        window.location.href = '/arigato-kuji-v2.html';
+        return;
+      }
       showLoggedIn(session.user);
     } else {
       showLoggedOut();
@@ -371,7 +376,7 @@
   const googleLogin = async () => {
     const { error } = await sb.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.href }
+      options: { redirectTo: 'https://arigatouroto.vercel.app/arigato-kuji-v2.html' }
     });
     if (error) showToast(error.message, 'error');
   };
